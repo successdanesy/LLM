@@ -1,16 +1,25 @@
+<!-- This HTML code sets up the structure for the login and registration forms. 
+It includes links to the external CSS file for styling and the JavaScript file 
+for handling form submissions. The forms are placed inside containers for better 
+layout and styling, making it easy to understand and modify. -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login and Register</title>
+  <!-- Link to external CSS file for styling -->
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+  <!-- Wrapper for the form containers -->
   <div class="form-wrapper">
 
+    <!-- Container for the registration form -->
     <div class="form-container">
       <h2>Register</h2>
+      <!-- Registration form -->
       <form id="registerForm">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required>
@@ -22,8 +31,10 @@
       </form>
     </div>
 
+    <!-- Container for the login form -->
     <div class="form-container">
       <h2>Login</h2>
+      <!-- Login form -->
       <form id="loginForm">
         <label for="loginEmail">Email:</label>
         <input type="email" id="loginEmail" name="email" required>
@@ -33,6 +44,7 @@
       </form>
     </div>
   </div>
+  <!-- Link to external JavaScript file for form handling -->
   <script src="auth.js"></script>
 </body>
 </html>

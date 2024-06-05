@@ -1,3 +1,10 @@
+// This code sets up an Express server with routes for user registration, login, 
+// and message handling. It includes middleware for authentication and integrates
+//  with the GrammarBot API to check message grammar. It also includes error handling 
+//  for both 404 and general errors.
+
+
+// Import required modules
 var express = require("express");
 var cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -6,10 +13,13 @@ const mongoose = require("mongoose");
 const qs = require('querystring');
 const https = require('https');
 
+// Initialize express app
 const app = express();
+
+// Connect to MongoDB
 mongoose.connect("mongodb://localhost:27017/llm_api");
 
-// User Schema
+// User Schema definition
 const user = mongoose.model("user", {
   email: {
     type: String,
@@ -32,7 +42,7 @@ const user = mongoose.model("user", {
   },
 });
 
-// Message Schema
+// Message Schema definition
 const message = mongoose.model("message", {
   user: {
     type: mongoose.SchemaTypes.ObjectId,
@@ -58,20 +68,20 @@ const message = mongoose.model("message", {
   },
 });
 
-// Enable CORS
+// Middleware setup
 app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
 app.use(express.static('public'));
 
+// Cookie options
 const options = {
   expires: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
   httpOnly: true,
 };
 
-// Authentication Middleware
+// Authentication middleware
 const protected = (req, res, next) => {
   let token;
   if (req.cookies.token) {
@@ -88,7 +98,7 @@ const protected = (req, res, next) => {
   next();
 };
 
-// Login Route
+// Login route
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -101,7 +111,7 @@ app.post("/login", async (req, res) => {
   res.status(201).cookie("token", data._id.toString(), options).json({ success: true, status: "success", data });
 });
 
-// Register Route
+// Register route
 app.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
   const isUser = await user.findOne({ email: email.toLowerCase() });
@@ -112,13 +122,13 @@ app.post("/register", async (req, res) => {
   res.status(201).cookie("token", newUser._id.toString(), options).json({ success: true, status: "success", data: newUser });
 });
 
-// Get Messages Route
+// Get messages route
 app.get("/messages", protected, async (req, res) => {
   const myMessage = await message.find({ user: req.user._id }).sort({ _id: -1 });
   res.status(200).json({ success: true, status: " success", prompt: myMessage });
 });
 
-// GrammarBot Integration
+// GrammarBot integration for checking grammar
 const grammarCheck = (text, callback) => {
   const options = {
     method: 'POST',
@@ -142,7 +152,7 @@ const grammarCheck = (text, callback) => {
   req.end();
 };
 
-// Handle New Messages and Grammar Check
+// Handle new messages and grammar check
 app.post("/messages", protected, async (req, res) => {
   const { body, type } = req.body;
   const newMsg = await message.create({ body, type, user: req.user._id, fromChat: false });
@@ -161,18 +171,19 @@ app.post("/messages", protected, async (req, res) => {
   });
 });
 
-// Error Handling
+// Error handling for 404 not found
 app.use((req, res) => {
   res.status(404).json({ success: false, status: "Resource Not Found", error: "404 Content Do Not Exist Or Has Been Deleted" });
 });
 
+// General error handling
 app.use((err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
   res.status(err.status || 500).json({ success: false, error: err.message });
 });
 
-// Start Server
+// Start the server
 const server = http.createServer(app);
 const port = 3000;
 server.listen(port, () => console.log("Listening on port " + port));

@@ -1,17 +1,29 @@
+<!-- This HTML code sets up a basic chat interface with an input field for the user to type messages, 
+a button to send messages, and a container to display chat messages. 
+The external CSS file (styles.css) is used for styling, 
+and the JavaScript file (chat.js) handles the chat functionality. -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chat</title>
+  <!-- Link to external CSS file for styling -->
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+  <!-- Container for chat interface -->
   <div class="chat-container">
+    <!-- Input field for user to type message -->
     <input type="text" id="userMessage" placeholder="Type your message...">
+    <!-- Button to send the message -->
     <button id="sendMessage">Send</button>
+    <!-- Div to display chat messages -->
     <div id="chatBox"></div>
   </div>
+  <!-- Link to external JavaScript file for chat functionality -->
   <script src="chat.js"></script>
 </body>
 </html>
+
